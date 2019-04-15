@@ -123,10 +123,6 @@ skip
 			mvnlt	r3,r3
 			mvnlt	r4,r4
 			addslt	r4,r4,#1
-			bge		skip_1
-			addcs	r3,r3,#1
-			
-skip_1
 			stmdb	sp!,{r1,r2,r3,r4}
 			bl		mult
 			adr		r2,result
@@ -134,10 +130,6 @@ skip_1
 			mvneq	r0,r0
 			mvneq	r1,r1
 			addseq	r1,r1,#1
-			bge		skip_2
-			addcs	r0,r0,#1
-			
-skip_2
 			str		r0,[r2],#4
 			str		r1,[r2]
 			
