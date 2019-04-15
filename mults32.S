@@ -3,7 +3,8 @@ result	FILL		4
 carry	FILL		4
 		
 main
-		adr		r0,numbers
+		adr		r0, numbers
+		adr		r7, result	;save this register for the result fill
 		ldr		r1,[r0],#4
 		ldr		r2,[r0]
 		add		r4,r0,#8
@@ -24,21 +25,21 @@ main
 		cmp		r6,#1	;make result positive if negative
 		mvneq	r0,r0
 		addeq	r0,r0,#1
-		str		r0,[r4]
+		str		r0, [r7]	;store result in register addressed to result fill
 		str		r1,[r5]
 		
 		end
 		
 mult
 		ldmia	sp!,{r0,r1}	;load op1 and op2
-		stmdb	sp!,{r4,r5,r6,r9} ;adding extra registers to the stack
+		stmdb	sp!,{r4,r5,r6,r9} ;putting extra registers on the stack
 		mov		r2,#1		;shift bit
 		mov		r3,#-1		;shift count, has to be negative because of some index weirdness
 		mov		r9,#0		;result
 		mov		r6,#0		;flag for carry
 loop
 		cmp		r3,#32		;check if the result is greater than 32 bits
-		beq		process
+		beq		move
 		tst		r0,r2			;test shifting bit against multiplier
 		lsl		r2,r2,#1
 		add		r3,r3,#1
@@ -48,7 +49,7 @@ loop
 		adds		r9,r9,r4			;add into result register, sets flags
 		movcs	r6,#1			;set the carry bit if an add ever sets it
 		bal		loop				;loop
-process
+move
 		mov		r0,r9		;store result in return register
 		mov		r1,r6
 		ldmia	sp!,{r4,r5,r6,r9}
